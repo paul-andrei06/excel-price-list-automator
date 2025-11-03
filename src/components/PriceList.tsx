@@ -103,7 +103,7 @@ export const PriceList = ({ data }: PriceListProps) => {
       <Card className="p-8">
         <div className="space-y-8">
           {Object.entries(groupedData).map(([category, brands]) => (
-            <div key={category} className="space-y-4 print:break-before-page print:break-inside-avoid">
+            <div key={category} className="space-y-4 print:break-inside-avoid">
               <h3 className="text-xl font-bold text-primary border-b-2 border-primary pb-2">
                 {category}
               </h3>
