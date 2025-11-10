@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { FileUpload } from "@/components/FileUpload";
 import { PriceList, ProductData } from "@/components/PriceList";
+import { TradePriceList, TradeProductData } from "@/components/TradePriceList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import * as XLSX from "xlsx";
 import { useToast } from "@/hooks/use-toast";
 import { FileSpreadsheet } from "lucide-react";
 
 const Index = () => {
   const [priceData, setPriceData] = useState<ProductData[] | null>(null);
+  const [tradeData, setTradeData] = useState<TradeProductData[] | null>(null);
   const { toast } = useToast();
 
   const handleFileSelect = async (file: File) => {
@@ -22,7 +25,7 @@ const Index = () => {
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json<any>(worksheet);
       
-      // Map and validate the data
+      // Map and validate the data for Wholesale
       const mappedData: ProductData[] = jsonData
         .filter((row) => row.SKU && row.Category && row.Brand)
         .map((row) => ({
@@ -31,6 +34,18 @@ const Index = () => {
           SKU: row.SKU || "",
           "Product Name": row["Product Name"] || "",
           Wholesale: parseFloat(row.Wholesale) || 0,
+          "Trade £": parseFloat(row["Trade £"]) || 0,
+          "(Box) Ctn": row["(Box) Ctn"] || "",
+        }));
+
+      // Map data for Trade Price List
+      const mappedTradeData: TradeProductData[] = jsonData
+        .filter((row) => row.SKU && row.Category && row.Brand)
+        .map((row) => ({
+          Category: row.Category || "",
+          Brand: row.Brand || "",
+          SKU: row.SKU || "",
+          "Product Name": row["Product Name"] || "",
           "Trade £": parseFloat(row["Trade £"]) || 0,
           "(Box) Ctn": row["(Box) Ctn"] || "",
         }));
@@ -45,6 +60,7 @@ const Index = () => {
       }
 
       setPriceData(mappedData);
+      setTradeData(mappedTradeData);
       toast({
         title: "File processed successfully",
         description: `Loaded ${mappedData.length} products`,
@@ -101,7 +117,18 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <PriceList data={priceData} />
+          <Tabs defaultValue="wholesale" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
+              <TabsTrigger value="wholesale">Wholesale Price List</TabsTrigger>
+              <TabsTrigger value="trade">Trade Price List</TabsTrigger>
+            </TabsList>
+            <TabsContent value="wholesale">
+              <PriceList data={priceData} />
+            </TabsContent>
+            <TabsContent value="trade">
+              {tradeData && <TradePriceList data={tradeData} />}
+            </TabsContent>
+          </Tabs>
         )}
       </main>
     </div>
