@@ -111,6 +111,14 @@ export const TradePriceList = ({ data }: TradePriceListProps) => {
                   </h4>
                   
                   <div className="ml-6 space-y-1">
+                    {/* Column Headers */}
+                    <div className="grid grid-cols-[120px_1fr_100px_100px] gap-4 py-2 border-b-2 border-primary/50 font-semibold text-sm">
+                      <span>SKU</span>
+                      <span>Product</span>
+                      <span className="text-right">Price</span>
+                      <span className="text-right">(Box) Ctn.</span>
+                    </div>
+                    
                     {products.map((product, idx) => (
                       <div
                         key={`${product.SKU}-${idx}`}

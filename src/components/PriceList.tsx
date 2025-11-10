@@ -115,6 +115,15 @@ export const PriceList = ({ data }: PriceListProps) => {
                   </h4>
                   
                   <div className="ml-6 space-y-1">
+                    {/* Column Headers */}
+                    <div className="grid grid-cols-[120px_1fr_100px_100px_100px] gap-4 py-2 border-b-2 border-primary/50 font-semibold text-sm">
+                      <span>SKU</span>
+                      <span>Product</span>
+                      <span className="text-right">Wholesale</span>
+                      <span className="text-right">Trade £</span>
+                      <span className="text-right">(Box) Ctn.</span>
+                    </div>
+                    
                     {products.map((product, idx) => (
                       <div
                         key={`${product.SKU}-${idx}`}
@@ -127,10 +136,10 @@ export const PriceList = ({ data }: PriceListProps) => {
                           {product["Product Name"]}
                         </span>
                         <span className="text-right font-semibold">
-                          £{product.Wholesale.toFixed(4)}
+                          £{product.Wholesale.toFixed(2)}
                         </span>
                         <span className="text-right">
-                          {product["Trade £"]}
+                          £{typeof product["Trade £"] === 'number' ? product["Trade £"].toFixed(2) : product["Trade £"]}
                         </span>
                         <span className="text-right text-muted-foreground">
                           {product["(Box) Ctn"]}
