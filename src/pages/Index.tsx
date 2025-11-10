@@ -118,7 +118,7 @@ const Index = () => {
           </div>
         ) : (
           <Tabs defaultValue="wholesale" className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6 print:hidden">
               <TabsTrigger value="wholesale">Wholesale Price List</TabsTrigger>
               <TabsTrigger value="trade">Trade Price List</TabsTrigger>
             </TabsList>
