@@ -27,12 +27,12 @@ const Index = () => {
       
       // Map and validate the data for Wholesale
       const mappedData: ProductData[] = jsonData
-        .filter((row) => row.SKU && row.Category && row.Brand)
+        .filter((row) => row.SKU && row["Round Slim Panels"])
         .map((row) => ({
-          Category: row.Category || "",
-          Brand: row.Brand || "",
+          Category: row.SKU || "",
+          Brand: row["Round Slim Panels"] || "",
           SKU: row.SKU || "",
-          "Product Name": row["Product Name"] || "",
+          "Product Name": row["Round Slim Panels"] || "",
           Wholesale: parseFloat(row.Wholesale) || 0,
           "Trade £": parseFloat(row["Trade £"]) || 0,
           "(Box) Ctn": row["(Box) Ctn"] || "",
@@ -40,12 +40,12 @@ const Index = () => {
 
       // Map data for Trade Price List
       const mappedTradeData: TradeProductData[] = jsonData
-        .filter((row) => row.SKU && row.Category && row.Brand)
+        .filter((row) => row.SKU && row["Round Slim Panels"])
         .map((row) => ({
-          Category: row.Category || "",
-          Brand: row.Brand || "",
+          Category: row.SKU || "",
+          Brand: row["Round Slim Panels"] || "",
           SKU: row.SKU || "",
-          "Product Name": row["Product Name"] || "",
+          "Product Name": row["Round Slim Panels"] || "",
           "Trade £": parseFloat(row["Trade £"]) || 0,
           "(Box) Ctn": row["(Box) Ctn"] || "",
         }));
@@ -103,10 +103,8 @@ const Index = () => {
             <div className="mt-8 p-6 bg-card rounded-lg border border-border">
               <h3 className="font-semibold text-foreground mb-3">Required Excel Columns:</h3>
               <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• Category</li>
-                <li>• Brand</li>
                 <li>• SKU</li>
-                <li>• Product Name</li>
+                <li>• Round Slim Panels</li>
                 <li>• Wholesale</li>
                 <li>• Trade £</li>
                 <li>• (Box) Ctn</li>
