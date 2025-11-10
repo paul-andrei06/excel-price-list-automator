@@ -13,8 +13,8 @@ export interface TradeProductData {
 }
 
 interface GroupedData {
-  [category: string]: {
-    [brand: string]: TradeProductData[];
+  [brand: string]: {
+    [productType: string]: TradeProductData[];
   };
 }
 
@@ -24,33 +24,33 @@ interface TradePriceListProps {
 
 export const TradePriceList = ({ data }: TradePriceListProps) => {
   const groupedData = data.reduce<GroupedData>((acc, item) => {
-    if (!acc[item.Category]) {
-      acc[item.Category] = {};
+    if (!acc[item.Brand]) {
+      acc[item.Brand] = {};
     }
-    if (!acc[item.Category][item.Brand]) {
-      acc[item.Category][item.Brand] = [];
+    if (!acc[item.Brand][item.Category]) {
+      acc[item.Brand][item.Category] = [];
     }
-    acc[item.Category][item.Brand].push(item);
+    acc[item.Brand][item.Category].push(item);
     return acc;
   }, {});
 
   const handleExport = () => {
     const exportData: any[] = [];
     
-    Object.entries(groupedData).forEach(([category, brands]) => {
+    Object.entries(groupedData).forEach(([brand, productTypes]) => {
       exportData.push({
-        Category: category,
-        Brand: "",
+        Brand: brand,
+        "Product Type": "",
         SKU: "",
         "Product Name": "",
         "Trade £": "",
         "(Box) Ctn": "",
       });
       
-      Object.entries(brands).forEach(([brand, products]) => {
+      Object.entries(productTypes).forEach(([productType, products]) => {
         exportData.push({
-          Category: "",
-          Brand: brand,
+          Brand: "",
+          "Product Type": productType,
           SKU: "",
           "Product Name": "",
           "Trade £": "",
@@ -59,8 +59,8 @@ export const TradePriceList = ({ data }: TradePriceListProps) => {
         
         products.forEach((product) => {
           exportData.push({
-            Category: "",
             Brand: "",
+            "Product Type": "",
             SKU: product.SKU,
             "Product Name": product["Product Name"],
             "Trade £": product["Trade £"],
@@ -98,16 +98,16 @@ export const TradePriceList = ({ data }: TradePriceListProps) => {
 
       <Card className="p-8">
         <div className="space-y-8">
-          {Object.entries(groupedData).map(([category, brands]) => (
-            <div key={category} className="space-y-4 print:break-inside-avoid">
+          {Object.entries(groupedData).map(([brand, productTypes]) => (
+            <div key={brand} className="space-y-6 print:break-inside-avoid">
               <h3 className="text-xl font-bold text-primary border-b-2 border-primary pb-2">
-                {category}
+                {brand}
               </h3>
               
-              {Object.entries(brands).map(([brand, products]) => (
-                <div key={`${category}-${brand}`} className="ml-4 space-y-2">
+              {Object.entries(productTypes).map(([productType, products]) => (
+                <div key={`${brand}-${productType}`} className="ml-4 space-y-2">
                   <h4 className="text-lg font-semibold text-accent">
-                    {brand}
+                    {productType}
                   </h4>
                   
                   <div className="ml-6 space-y-1">

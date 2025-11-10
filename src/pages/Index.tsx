@@ -25,30 +25,44 @@ const Index = () => {
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json<any>(worksheet);
       
+      let currentBrand = "";
+      let currentProductType = "";
+      
       // Map and validate the data for Wholesale
-      const mappedData: ProductData[] = jsonData
-        .filter((row) => row.SKU && row["Round Slim Panels"])
-        .map((row) => ({
-          Category: row.SKU || "",
-          Brand: row["Round Slim Panels"] || "",
-          SKU: row.SKU || "",
-          "Product Name": row["Round Slim Panels"] || "",
-          Wholesale: parseFloat(row.Wholesale) || 0,
-          "Trade £": parseFloat(row["Trade £"]) || 0,
-          "(Box) Ctn": row["(Box) Ctn"] || "",
-        }));
-
-      // Map data for Trade Price List
-      const mappedTradeData: TradeProductData[] = jsonData
-        .filter((row) => row.SKU && row["Round Slim Panels"])
-        .map((row) => ({
-          Category: row.SKU || "",
-          Brand: row["Round Slim Panels"] || "",
-          SKU: row.SKU || "",
-          "Product Name": row["Round Slim Panels"] || "",
-          "Trade £": parseFloat(row["Trade £"]) || 0,
-          "(Box) Ctn": row["(Box) Ctn"] || "",
-        }));
+      const mappedData: ProductData[] = [];
+      const mappedTradeData: TradeProductData[] = [];
+      
+      jsonData.forEach((row) => {
+        // Check if this row is a Brand header (SKU contains brand name, no price data)
+        if (row.SKU && !row.Wholesale && !row["Trade £"] && row["Round Slim Panels"]) {
+          currentBrand = row.SKU;
+          currentProductType = row["Round Slim Panels"];
+        } 
+        // Check if this is a product row (has SKU and prices)
+        else if (row.SKU && (row.Wholesale || row["Trade £"])) {
+          const productData: ProductData = {
+            Category: currentProductType,
+            Brand: currentBrand,
+            SKU: row.SKU || "",
+            "Product Name": row["Round Slim Panels"] || "",
+            Wholesale: parseFloat(row.Wholesale) || 0,
+            "Trade £": parseFloat(row["Trade £"]) || 0,
+            "(Box) Ctn": row["(Box) Ctn"] || "",
+          };
+          
+          const tradeProductData: TradeProductData = {
+            Category: currentProductType,
+            Brand: currentBrand,
+            SKU: row.SKU || "",
+            "Product Name": row["Round Slim Panels"] || "",
+            "Trade £": parseFloat(row["Trade £"]) || 0,
+            "(Box) Ctn": row["(Box) Ctn"] || "",
+          };
+          
+          mappedData.push(productData);
+          mappedTradeData.push(tradeProductData);
+        }
+      });
 
       if (mappedData.length === 0) {
         toast({
