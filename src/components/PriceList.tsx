@@ -14,8 +14,8 @@ export interface ProductData {
 }
 
 interface GroupedData {
-  [brand: string]: {
-    [productType: string]: ProductData[];
+  [category: string]: {
+    [brand: string]: ProductData[];
   };
 }
 
@@ -25,23 +25,23 @@ interface PriceListProps {
 
 export const PriceList = ({ data }: PriceListProps) => {
   const groupedData = data.reduce<GroupedData>((acc, item) => {
-    if (!acc[item.Brand]) {
-      acc[item.Brand] = {};
+    if (!acc[item.Category]) {
+      acc[item.Category] = {};
     }
-    if (!acc[item.Brand][item.Category]) {
-      acc[item.Brand][item.Category] = [];
+    if (!acc[item.Category][item.Brand]) {
+      acc[item.Category][item.Brand] = [];
     }
-    acc[item.Brand][item.Category].push(item);
+    acc[item.Category][item.Brand].push(item);
     return acc;
   }, {});
 
   const handleExport = () => {
     const exportData: any[] = [];
     
-    Object.entries(groupedData).forEach(([brand, productTypes]) => {
+    Object.entries(groupedData).forEach(([category, brands]) => {
       exportData.push({
-        Brand: brand,
-        "Product Type": "",
+        Category: category,
+        Brand: "",
         SKU: "",
         "Product Name": "",
         Wholesale: "",
@@ -49,10 +49,10 @@ export const PriceList = ({ data }: PriceListProps) => {
         "(Box) Ctn": "",
       });
       
-      Object.entries(productTypes).forEach(([productType, products]) => {
+      Object.entries(brands).forEach(([brand, products]) => {
         exportData.push({
-          Brand: "",
-          "Product Type": productType,
+          Category: "",
+          Brand: brand,
           SKU: "",
           "Product Name": "",
           Wholesale: "",
@@ -62,8 +62,8 @@ export const PriceList = ({ data }: PriceListProps) => {
         
         products.forEach((product) => {
           exportData.push({
+            Category: "",
             Brand: "",
-            "Product Type": "",
             SKU: product.SKU,
             "Product Name": product["Product Name"],
             Wholesale: product.Wholesale,
@@ -102,16 +102,16 @@ export const PriceList = ({ data }: PriceListProps) => {
 
       <Card className="p-8">
         <div className="space-y-8">
-          {Object.entries(groupedData).map(([brand, productTypes]) => (
-            <div key={brand} className="space-y-6 print:break-inside-avoid">
+          {Object.entries(groupedData).map(([category, brands]) => (
+            <div key={category} className="space-y-4 print:break-inside-avoid">
               <h3 className="text-xl font-bold text-primary border-b-2 border-primary pb-2">
-                {brand}
+                {category}
               </h3>
               
-              {Object.entries(productTypes).map(([productType, products]) => (
-                <div key={`${brand}-${productType}`} className="ml-4 space-y-2">
+              {Object.entries(brands).map(([brand, products]) => (
+                <div key={`${category}-${brand}`} className="ml-4 space-y-2">
                   <h4 className="text-lg font-semibold text-accent">
-                    {productType}
+                    {brand}
                   </h4>
                   
                   <div className="ml-6 space-y-1">
